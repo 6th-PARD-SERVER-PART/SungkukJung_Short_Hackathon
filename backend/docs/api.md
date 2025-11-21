@@ -1,384 +1,135 @@
-# 📌 Cleaning Guide App API 명세서
+# Cleaning Guide Backend API Specification (조회 전용 버전)
 
-**Base URL**: `/api`
+본 문서는 실제 구현된 기능만을 기반으로 하여, **데이터 생성 없이 조회(read-only) 중심으로 사용하는 경우**에 맞추어 재작성된 API 명세서입니다.
 
----
-
-## 1. Place API
-
-**Base URL**: `/api/places`
-
-### ERD
-
-| 필드명 | 타입 | 설명 |
-|--------|------|------|
-| placeId | Long | PK |
-| placeName | String | 장소명 |
-| placeImage | String | 장소 대표 이미지 파일명 |
-| supplyId | Long | FK → Supply.supplyId |
-| routineId | Long | FK → Routine.routineId |
+즉, 이 앱은 장소(Place), 준비물(Supply), 루틴(Routine)의 데이터를 미리 DB에 저장해두고,
+**클라이언트는 이 데이터를 조회해서 보여주기만 하는 구조**입니다.
 
 ---
 
-### 1) 전체 장소 조회
+# 1. Base URL
 
-**GET** `/places`
+`/api`
 
-#### 📌 설명
-모든 장소(Place)를 리스트 형태로 조회합니다.
+---
 
-#### ✔ Response (200 OK)
+# 2. Place API (장소 조회 기능)
+
+## 2.1 전체 장소 조회
+
+**GET** `/api/place`
+
+### Response
+
 ```json
 [
-    {
-        "placeId": 1,
-        "placeName": "욕실",
-        "placeImage": "bathroom.png",
-        "supplyId": 10,
-        "routineId": 100
-    },
-    {
-        "placeId": 2,
-        "placeName": "주방",
-        "placeImage": "kitchen.png",
-        "supplyId": 11,
-        "routineId": 101
-    }
-]
-```
-
----
-
-### 2) 단일 장소 조회
-
-**GET** `/places/{placeId}`
-
-#### 📌 설명
-placeId를 기반으로 특정 장소의 상세 정보를 조회합니다.
-
-#### ✔ Path Variable
-
-| 이름 | 타입 | 설명 |
-|------|------|------|
-| placeId | Long | 조회할 장소 ID |
-
-#### ✔ Response (200 OK)
-```json
-{
+  {
     "placeId": 1,
     "placeName": "욕실",
     "placeImage": "bathroom.png",
     "supplyId": 10,
-    "routineId": 100
-}
-```
-
-#### ❗ Response (404 Not Found)
-```json
-{
-    "error": "Place not found",
-    "placeId": 999
-}
-```
-
----
-
-## 2. Supply API
-
-**Base URL**: `/api/supplies`
-
-### ERD
-
-| 필드명 | 타입 | 설명 |
-|--------|------|------|
-| supplyId | Long | PK |
-| supplyName | String | 청소 도구/세제 이름 |
-| placeId | Long | FK → Place.placeId |
-
----
-
-### 1) 전체 청소용품 조회
-
-**GET** `/supplies`
-
-#### 📌 설명
-모든 청소용품(Supply)을 리스트 형태로 조회합니다.
-
-#### ✔ Response (200 OK)
-```json
-[
-    {
-        "supplyId": 10,
-        "supplyName": "변기 세정제",
-        "placeId": 1
-    },
-    {
-        "supplyId": 11,
-        "supplyName": "주방 세제",
-        "placeId": 2
-    }
+    "routineId": 3
+  }
 ]
 ```
 
 ---
 
-### 2) 단일 청소용품 조회
+## 2.2 장소 상세 조회
 
-**GET** `/supplies/{supplyId}`
+**GET** `/api/place/{placeId}`
 
-#### 📌 설명
-supplyId를 기반으로 특정 청소용품의 상세 정보를 조회합니다.
+### Response
 
-#### ✔ Path Variable
-
-| 이름 | 타입 | 설명 |
-|------|------|------|
-| supplyId | Long | 조회할 청소용품 ID |
-
-#### ✔ Response (200 OK)
 ```json
 {
-    "supplyId": 10,
-    "supplyName": "변기 세정제",
+  "placeId": 1,
+  "placeName": "욕실",
+  "placeImage": "bathroom.png",
+  "supplyId": 10,
+  "routineId": 3
+}
+```
+
+---
+
+# 3. Supply API (준비물 조회 기능)
+
+## 3.1 특정 장소의 준비물 목록 조회
+
+**GET** `/api/supply/{placeId}`
+
+### Response
+
+```json
+[
+  {
+    "supplyId": 1,
+    "supplyName": "욕실 세정제",
     "placeId": 1
-}
-```
-
-#### ❗ Response (404 Not Found)
-```json
-{
-    "error": "Supply not found",
-    "supplyId": 999
-}
-```
-
----
-
-### 3) 특정 장소의 청소용품 조회
-
-**GET** `/places/{placeId}/supplies`
-
-#### 📌 설명
-특정 장소에 필요한 청소용품 목록을 조회합니다.
-
-#### ✔ Path Variable
-
-| 이름 | 타입 | 설명 |
-|------|------|------|
-| placeId | Long | 장소 ID |
-
-#### ✔ Response (200 OK)
-```json
-[
-    {
-        "supplyId": 10,
-        "supplyName": "변기 세정제",
-        "placeId": 1
-    },
-    {
-        "supplyId": 12,
-        "supplyName": "욕실 청소 솔",
-        "placeId": 1
-    }
+  }
 ]
 ```
 
 ---
 
-## 3. Routine API
+## 3.2 단일 준비물 상세 조회
 
-**Base URL**: `/api/routines`
+**GET** `/api/supply/detail/{supplyId}`
 
-### ERD
+### Response
 
-| 필드명 | 타입 | 설명 |
-|--------|------|------|
-| routineId | Long | PK |
-| orderIndex | Long | 루틴 순서를 위한 정렬 기준(sortBy) |
-| title | String | 루틴 단계 제목 |
-| description | String | 루틴 설명 |
-| routineImage | String | 루틴 단계 이미지 |
-| isComplete | Boolean | 단계 완료 여부 |
-| placeId | Long | FK → Place.placeId |
-
----
-
-### 1) 전체 루틴 조회
-
-**GET** `/routines`
-
-#### 📌 설명
-모든 루틴(Routine)을 리스트 형태로 조회합니다.
-
-#### ✔ Query Parameters
-
-| 이름 | 타입 | 필수 여부 | 설명 |
-|------|------|----------|------|
-| placeId | Long | Optional | 특정 장소의 루틴만 필터링 |
-| sortBy | String | Optional | 정렬 기준 (기본값: orderIndex) |
-
-#### ✔ Response (200 OK)
 ```json
-[
-    {
-        "routineId": 100,
-        "orderIndex": 1,
-        "title": "변기 청소",
-        "description": "변기 세정제를 뿌린 후 솔로 문지릅니다.",
-        "routineImage": "toilet_cleaning.png",
-        "isComplete": false,
-        "placeId": 1
-    },
-    {
-        "routineId": 101,
-        "orderIndex": 2,
-        "title": "싱크대 청소",
-        "description": "주방 세제로 싱크대를 닦습니다.",
-        "routineImage": "sink_cleaning.png",
-        "isComplete": false,
-        "placeId": 2
-    }
-]
+{
+  "supplyId": 1,
+  "supplyName": "욕실 세정제",
+  "placeId": 1
+}
 ```
 
 ---
 
-### 2) 단일 루틴 조회
+# 4. Routine API (루틴 조회 기능)
 
-**GET** `/routines/{routineId}`
 
-#### 📌 설명
-routineId를 기반으로 특정 루틴의 상세 정보를 조회합니다.
+## 4.1 특정 장소의 루틴 조회
 
-#### ✔ Path Variable
+**GET** `/api/routine/{placeId}`
 
-| 이름 | 타입 | 설명 |
-|------|------|------|
-| routineId | Long | 조회할 루틴 ID |
+### Response
 
-#### ✔ Response (200 OK)
 ```json
-{
-    "routineId": 100,
+[
+  {
+    "routineId": 1,
     "orderIndex": 1,
-    "title": "변기 청소",
-    "description": "변기 세정제를 뿌린 후 솔로 문지릅니다.",
-    "routineImage": "toilet_cleaning.png",
+    "title": "세면대 주변 정리",
+    "description": "세면대 위 물건 정리",
+    "routineImage": "bath_1.png",
     "isComplete": false,
     "placeId": 1
-}
-```
-
-#### ❗ Response (404 Not Found)
-```json
-{
-    "error": "Routine not found",
-    "routineId": 999
-}
-```
-
----
-
-### 3) 특정 장소의 루틴 조회
-
-**GET** `/places/{placeId}/routines`
-
-#### 📌 설명
-특정 장소의 청소 루틴 목록을 orderIndex 순서대로 조회합니다.
-
-#### ✔ Path Variable
-
-| 이름 | 타입 | 설명 |
-|------|------|------|
-| placeId | Long | 장소 ID |
-
-#### ✔ Response (200 OK)
-```json
-[
-    {
-        "routineId": 100,
-        "orderIndex": 1,
-        "title": "변기 청소",
-        "description": "변기 세정제를 뿌린 후 솔로 문지릅니다.",
-        "routineImage": "toilet_cleaning.png",
-        "isComplete": false,
-        "placeId": 1
-    },
-    {
-        "routineId": 102,
-        "orderIndex": 2,
-        "title": "욕조 청소",
-        "description": "욕조 세정제로 욕조를 닦습니다.",
-        "routineImage": "bathtub_cleaning.png",
-        "isComplete": false,
-        "placeId": 1
-    }
+  }
 ]
 ```
 
 ---
 
-### 4) 루틴 완료 상태 변경
+## 4.2 개별 루틴 단계 조회
 
-**PATCH** `/routines/{routineId}/complete`
+**GET** `/api/routine/detail/{routineId}`
 
-#### 📌 설명
-특정 루틴의 완료 여부를 토글합니다.
+### Response
 
-#### ✔ Path Variable
-
-| 이름 | 타입 | 설명 |
-|------|------|------|
-| routineId | Long | 루틴 ID |
-
-#### ✔ Request Body
 ```json
 {
-    "isComplete": true
-}
-```
-
-#### ✔ Response (200 OK)
-```json
-{
-    "routineId": 100,
-    "orderIndex": 1,
-    "title": "변기 청소",
-    "description": "변기 세정제를 뿌린 후 솔로 문지릅니다.",
-    "routineImage": "toilet_cleaning.png",
-    "isComplete": true,
-    "placeId": 1
-}
-```
-
-#### ❗ Response (404 Not Found)
-```json
-{
-    "error": "Routine not found",
-    "routineId": 999
+  "routineId": 1,
+  "orderIndex": 1,
+  "title": "세면대 주변 정리",
+  "description": "세면대 위 물건 정리",
+  "routineImage": "bath_1.png",
+  "isComplete": false,
+  "placeId": 1
 }
 ```
 
 ---
-
-## 공통 에러 응답
-
-### 400 Bad Request
-```json
-{
-    "error": "VALIDATION_ERROR",
-    "message": "요청 데이터가 유효하지 않습니다.",
-    "details": {
-        "field": "placeId",
-        "issue": "placeId는 필수 항목입니다."
-    }
-}
-```
-
-### 500 Internal Server Error
-```json
-{
-    "error": "INTERNAL_SERVER_ERROR",
-    "message": "서버 내부 오류가 발생했습니다."
-}
-```
