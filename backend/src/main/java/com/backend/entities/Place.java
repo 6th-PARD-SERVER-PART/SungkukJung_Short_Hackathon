@@ -1,5 +1,8 @@
 package com.backend.entities;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -22,5 +25,14 @@ public class Place {
     @Column(name = "place_image")
     private String placeImage;
 
+    // One-to-Many: One Place has many Routines
+    @OneToMany(mappedBy = "place", cascade = { CascadeType.PERSIST, CascadeType.REMOVE }, orphanRemoval = true)
+    @Builder.Default
+    private List<Routine> routines = new ArrayList<>();
 
+    // Many-to-Many: Place can have many Supplies, Supply can be in many Places
+    @ManyToMany
+    @JoinTable(name = "place_supply", joinColumns = @JoinColumn(name = "place_id"), inverseJoinColumns = @JoinColumn(name = "supply_id"))
+    @Builder.Default
+    private List<Supply> supplies = new ArrayList<>();
 }

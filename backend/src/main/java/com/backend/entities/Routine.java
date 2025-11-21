@@ -30,4 +30,9 @@ public class Routine {
 
     @Column(name = "is_complete")
     private Boolean isComplete;
+
+    // Many Routines belong to One Place
+    @ManyToOne
+    @JoinColumn(name = "place_id")
+    private Place place;
 }

@@ -1,5 +1,8 @@
 package com.backend.entities;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -18,4 +21,9 @@ public class Supply {
 
     @Column(name = "supply_name")
     private String supplyName;
+
+    // Many-to-Many: Supply can be in many Places (optional, inverse side)
+    @ManyToMany(mappedBy = "supplies")
+    @Builder.Default
+    private List<Place> places = new ArrayList<>();
 }
