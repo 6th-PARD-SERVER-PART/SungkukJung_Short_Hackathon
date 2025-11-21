@@ -1,423 +1,271 @@
-<<<<<<< HEAD
-# Cleaning Guide Backend API Specification (조회 전용 버전)
+# clean_go API Specification
 
-본 문서는 실제 구현된 기능만을 기반으로 하여, **데이터 생성 없이 조회(read-only) 중심으로 사용하는 경우**에 맞추어 재작성된 API 명세서입니다.
-
-즉, 이 앱은 장소(Place), 준비물(Supply), 루틴(Routine)의 데이터를 미리 DB에 저장해두고,
-**클라이언트는 이 데이터를 조회해서 보여주기만 하는 구조**입니다.
 
 ---
 
-# 1. Base URL
+# 1. API 개요 (Overview)
 
-`/api`
+이 API는 clean_go 애플리케이션에서 사용하는 **조회 전용(Read-only) 백엔드 API**입니다.
+DB에 사전 저장된 장소(Place), 루틴(Routine), 준비물(Supply)을 조회하여 클라이언트(iOS)에 제공합니다.
+
+주요 기능:
+
+* 장소 목록 조회
+* 장소 상세 조회(루틴 + 준비물 포함)
+* 특정 장소에 필요한 준비물 조회
+* 특정 장소의 청소 루틴 조회
 
 ---
 
-# 2. Place API (장소 조회 기능)
+# 2. 엔드포인트 목록 (Endpoints)
 
-## 2.1 전체 장소 조회
+| 구분      | Method | URL                          | 설명            |
+| ------- | ------ | ---------------------------- | ------------- |
+| Place   | GET    | `/places`                    | 장소 전체 조회      |
+| Place   | GET    | `/places/{id}`               | 장소 상세 조회      |
+| Supply  | GET    | `/places/{placeId}/supplies` | 특정 장소의 준비물 조회 |
+| Routine | GET    | `/places/{placeId}/routines` | 특정 장소의 루틴 조회  |
 
-**GET** `/api/place`
+---
 
-### Response
+# 3. API 상세 명세 (Details)
+
+## 3.1 장소 전체 조회
+
+### **GET `/places`**
+
+### 📌 설명
+
+등록된 모든 장소의 요약 정보를 반환합니다.
+
+### 📌 매개변수 (Parameters)
+
+없음
+
+### 📌 응답 (Response 200)
 
 ```json
 [
   {
-    "placeId": 1,
-    "placeName": "욕실",
-    "placeImage": "bathroom.png",
-    "supplyId": 10,
-    "routineId": 3
+    "placeId": 0,
+    "placeName": "string",
+    "placeImage": "string"
   }
 ]
 ```
 
----
+### 📌 예제 요청
 
-## 2.2 장소 상세 조회
-
-**GET** `/api/place/{placeId}`
-
-### Response
-
-```json
-{
-  "placeId": 1,
-  "placeName": "욕실",
-  "placeImage": "bathroom.png",
-  "supplyId": 10,
-  "routineId": 3
-=======
-# API 명세서
-
-## 기본 정보
-- Base URL: `https://api.example.com/v1`
-- Content-Type: `application/json`
-
----
-
-## User API
-
-### 1. 사용자 생성
-**POST** `/users`
-
-사용자를 생성합니다.
-
-**Request Body**
-```json
-{
-  "name": "홍길동",
-  "group_token": "abc123xyz"
-}
 ```
-
-**Response** (201 Created)
-```json
-{
-  "id": 1,
-  "name": "홍길동",
-  "group_token": "abc123xyz",
-  "created_at": "2025-11-21T10:30:00Z"
->>>>>>> origin/main
-}
+GET /places
 ```
 
 ---
 
-<<<<<<< HEAD
-# 3. Supply API (준비물 조회 기능)
+## 3.2 장소 상세 조회
 
-## 3.1 특정 장소의 준비물 목록 조회
+### **GET `/places/{id}`**
 
-**GET** `/api/supply/{placeId}`
+### 📌 설명
 
-### Response
+특정 장소의 상세 정보 및 해당 장소의 청소 루틴, 준비물을 함께 반환합니다.
+
+### 📌 매개변수 (Path Parameter)
+
+| 이름 | 타입    | 필수 | 설명        |
+| -- | ----- | -- | --------- |
+| id | int64 | ✔  | 조회할 장소 ID |
+
+
+### 📌 응답 (Response 200)
+
+```json
+{
+  "placeId": 0,
+  "placeName": "string",
+  "routines": [
+    {
+      "routineId": 0,
+      "orderIndex": 0,
+      "title": "string",
+      "description": "string",
+      "routineImage": "string",
+      "isComplete": true
+    }
+  ],
+  "supplies": [
+    {
+      "supplyId": 0,
+      "supplyName": "string"
+    }
+  ]
+}
+```
+
+### 📌 예제 요청
+
+```
+GET /places/1
+```
+
+---
+
+## 3.3 특정 장소의 준비물 조회
+
+### **GET `/places/{placeId}/supplies`**
+
+### 📌 설명
+
+특정 장소(placeId)에 필요한 모든 준비물을 조회합니다.
+
+### 📌 매개변수 (Path Parameter)
+
+| 이름      | 타입    | 필수 | 설명    |
+| ------- | ----- | -- | ----- |
+| placeId | int64 | ✔  | 장소 ID |
+
+
+### 📌 응답 (Response 200)
 
 ```json
 [
   {
-    "supplyId": 1,
-    "supplyName": "욕실 세정제",
-    "placeId": 1
+    "supplyId": 0,
+    "supplyName": "string"
   }
 ]
 ```
 
----
+### 📌 예제 요청
 
-## 3.2 단일 준비물 상세 조회
-
-**GET** `/api/supply/detail/{supplyId}`
-
-### Response
-
-```json
-{
-  "supplyId": 1,
-  "supplyName": "욕실 세정제",
-  "placeId": 1
-=======
-### 2. 사용자 조회
-**GET** `/users/{id}`
-
-특정 사용자 정보를 조회합니다.
-
-**Path Parameters**
-- `id` (integer, required): 사용자 ID
-
-**Response** (200 OK)
-```json
-{
-  "id": 1,
-  "name": "홍길동",
-  "group_token": "abc123xyz",
-  "group": {
-    "token": "abc123xyz"
-  }
->>>>>>> origin/main
-}
+```
+GET /places/1/supplies
 ```
 
 ---
 
-<<<<<<< HEAD
-# 4. Routine API (루틴 조회 기능)
+## 3.4 특정 장소의 루틴 조회
+
+### **GET `/places/{placeId}/routines`**
+
+### 📌 설명
+
+특정 장소(placeId)의 청소 루틴을 순서(orderIndex) 기준으로 조회합니다.
+
+### 📌 매개변수 (Path Parameter)
+
+| 이름      | 타입    | 필수 |
+| ------- | ----- | -- |
+| placeId | int64 | ✔  |
 
 
-## 4.1 특정 장소의 루틴 조회
-
-**GET** `/api/routine/{placeId}`
-
-### Response
+### 📌 응답 (Response 200)
 
 ```json
 [
   {
-    "routineId": 1,
-    "orderIndex": 1,
-    "title": "세면대 주변 정리",
-    "description": "세면대 위 물건 정리",
-    "routineImage": "bath_1.png",
-    "isComplete": false,
-    "placeId": 1
+    "routineId": 0,
+    "orderIndex": 0,
+    "title": "string",
+    "description": "string",
+    "routineImage": "string",
+    "isComplete": true
   }
 ]
 ```
 
----
+### 📌 예제 요청
 
-## 4.2 개별 루틴 단계 조회
-
-**GET** `/api/routine/detail/{routineId}`
-
-### Response
-
-```json
-{
-  "routineId": 1,
-  "orderIndex": 1,
-  "title": "세면대 주변 정리",
-  "description": "세면대 위 물건 정리",
-  "routineImage": "bath_1.png",
-  "isComplete": false,
-  "placeId": 1
-=======
-### 3. 사용자 목록 조회
-**GET** `/users`
-
-전체 사용자 목록을 조회합니다.
-
-**Query Parameters**
-- `group_token` (string, optional): 그룹 토큰으로 필터링
-- `page` (integer, optional, default: 1): 페이지 번호
-- `limit` (integer, optional, default: 20): 페이지당 항목 수
-
-**Response** (200 OK)
-```json
-{
-  "data": [
-    {
-      "id": 1,
-      "name": "홍길동",
-      "group_token": "abc123xyz"
-    },
-    {
-      "id": 2,
-      "name": "김철수",
-      "group_token": "abc123xyz"
-    }
-  ],
-  "pagination": {
-    "page": 1,
-    "limit": 20,
-    "total": 2
-  }
->>>>>>> origin/main
-}
 ```
-
----
-<<<<<<< HEAD
-=======
-
-### 4. 사용자 수정
-**PUT** `/users/{id}`
-
-사용자 정보를 수정합니다.
-
-**Path Parameters**
-- `id` (integer, required): 사용자 ID
-
-**Request Body**
-```json
-{
-  "name": "홍길동2",
-  "group_token": "xyz456abc"
-}
-```
-
-**Response** (200 OK)
-```json
-{
-  "id": 1,
-  "name": "홍길동2",
-  "group_token": "xyz456abc",
-  "updated_at": "2025-11-21T11:30:00Z"
-}
+GET /places/1/routines
 ```
 
 ---
 
-### 5. 사용자 삭제
-**DELETE** `/users/{id}`
+# 4. 자원(Resource) 모델 설명
 
-사용자를 삭제합니다.
+## 📦 PlaceSummaryRequest
 
-**Path Parameters**
-- `id` (integer, required): 사용자 ID
-
-**Response** (204 No Content)
-
----
-
-## Group API
-
-### 1. 그룹 생성
-**POST** `/groups`
-
-그룹을 생성합니다.
-
-**Request Body**
 ```json
 {
-  "token": "abc123xyz"
+  "placeId": 0,
+  "placeName": "string",
+  "placeImage": "string"
 }
 ```
 
-**Response** (201 Created)
+## 📦 SupplyDto
+
 ```json
 {
-  "token": "abc123xyz",
-  "created_at": "2025-11-21T10:00:00Z"
+  "supplyId": 0,
+  "supplyName": "string"
 }
 ```
 
----
+## 📦 RoutineDto
 
-### 2. 그룹 조회
-**GET** `/groups/{token}`
-
-특정 그룹 정보를 조회합니다.
-
-**Path Parameters**
-- `token` (string, required): 그룹 토큰
-
-**Response** (200 OK)
 ```json
 {
-  "token": "abc123xyz",
-  "user_count": 5
+  "routineId": 0,
+  "orderIndex": 0,
+  "title": "string",
+  "description": "string",
+  "routineImage": "string",
+  "isComplete": true
+}
+```
+
+## 📦 PlaceDetailRequest
+
+```json
+{
+  "placeId": 0,
+  "placeName": "string",
+  "routines": [ RoutineDto ],
+  "supplies": [ SupplyDto ]
 }
 ```
 
 ---
+# 5. 엔티티(Entity) 구조 및 필드 설명
 
-### 3. 그룹 목록 조회
-**GET** `/groups`
 
-전체 그룹 목록을 조회합니다.
+## 5.1 Place Entity
 
-**Query Parameters**
-- `page` (integer, optional, default: 1): 페이지 번호
-- `limit` (integer, optional, default: 20): 페이지당 항목 수
+| 필드명        | 타입     | 설명      |
+| ---------- | ------ | ------- |
+| placeId    | Long   | PK      |
+| placeName  | String | 장소 이름   |
+| placeImage | String | 이미지 파일명 |
 
-**Response** (200 OK)
-```json
-{
-  "data": [
-    {
-      "token": "abc123xyz",
-      "user_count": 5
-    },
-    {
-      "token": "xyz456abc",
-      "user_count": 3
-    }
-  ],
-  "pagination": {
-    "page": 1,
-    "limit": 20,
-    "total": 2
-  }
-}
-```
+**관계**:
+
+* Routine: placeId로 매핑
+* Supply: placeId로 매핑
 
 ---
 
-### 4. 그룹의 사용자 목록 조회
-**GET** `/groups/{token}/users`
+## 5.2 Routine Entity
 
-특정 그룹에 속한 사용자 목록을 조회합니다.
-
-**Path Parameters**
-- `token` (string, required): 그룹 토큰
-
-**Query Parameters**
-- `page` (integer, optional, default: 1): 페이지 번호
-- `limit` (integer, optional, default: 20): 페이지당 항목 수
-
-**Response** (200 OK)
-```json
-{
-  "group_token": "abc123xyz",
-  "users": [
-    {
-      "id": 1,
-      "name": "홍길동"
-    },
-    {
-      "id": 2,
-      "name": "김철수"
-    }
-  ],
-  "pagination": {
-    "page": 1,
-    "limit": 20,
-    "total": 2
-  }
-}
-```
+| 필드명          | 타입      | 설명         |
+| ------------ | ------- | ---------- |
+| routineId    | Long    | PK         |
+| orderIndex   | Long    | 루틴 정렬 순서   |
+| title        | String  | 루틴 제목      |
+| description  | String  | 설명         |
+| routineImage | String  | 이미지 이름     |
+| isComplete   | Boolean | 완료 여부      |
+| placeId      | Long    | FK → Place |
 
 ---
 
-### 5. 그룹 삭제
-**DELETE** `/groups/{token}`
+## 5.3 Supply Entity
 
-그룹을 삭제합니다. (해당 그룹에 속한 사용자가 없어야 삭제 가능)
-
-**Path Parameters**
-- `token` (string, required): 그룹 토큰
-
-**Response** (204 No Content)
-
-**Error Response** (400 Bad Request)
-```json
-{
-  "error": "GROUP_HAS_USERS",
-  "message": "그룹에 속한 사용자가 존재하여 삭제할 수 없습니다."
-}
-```
+| 필드명        | 타입     | 설명         |
+| ---------- | ------ | ---------- |
+| supplyId   | Long   | PK         |
+| supplyName | String | 준비물 이름     |
+| placeId    | Long   | FK → Place |
 
 ---
-
-## 공통 에러 응답
-
-### 400 Bad Request
-```json
-{
-  "error": "VALIDATION_ERROR",
-  "message": "요청 데이터가 유효하지 않습니다.",
-  "details": {
-    "name": "이름은 필수 항목입니다."
-  }
-}
-```
-
-### 404 Not Found
-```json
-{
-  "error": "NOT_FOUND",
-  "message": "요청한 리소스를 찾을 수 없습니다."
-}
-```
-
-### 500 Internal Server Error
-```json
-{
-  "error": "INTERNAL_SERVER_ERROR",
-  "message": "서버 내부 오류가 발생했습니다."
-}
-```
->>>>>>> origin/main
