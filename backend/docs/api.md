@@ -1,41 +1,33 @@
-# API 명세서
+📌 Cleaning Guide App – REST API 명세서 (Updated)
 
-## 기본 정보
-- Base URL: `https://api.example.com/v1`
-- Content-Type: `application/json`
-
----
-
-## House API
-
-### 1. house
-POST `/house`
-
-| Key          | 타입     | 설명   |
-|--------------|--------|------|
-| `houseId`    | Long   | PK   |
-| `houseName`  | String | 집 이름 |
-| `inviteCode` | String | 초대코드 |
+Base URL: /api
 
 
-### 2. member
-
-## Member
-| 필드명       | 타입   | 설명                    |
-|-----------|--------|-----------------------|
-| memberId  | Long   | Member 고유 Primary Key |
-| name      | String | 사용자 이름                |
-| status    | String | 사용자 상태                |
-| imageName | String | 사용자 이미지               |
-| houseId   | Long   | House FK (어느 집에 속했는지) |
+1. Place
+| 필드명        | 타입     | 설명                     |
+| ---------- | ------ | ---------------------- |
+| placeId    | Long   | PK                     |
+| placeName  | String | 장소명                    |
+| placeImage | String | 장소 대표 이미지 파일명          |
+| supplyId   | Long   | FK → Supply.supplyId   |
+| routineId  | Long   | FK → Routine.routineId |
 
 
+2. Supply
+   | 필드명        | 타입     | 설명                 |
+   | ---------- | ------ | ------------------ |
+   | supplyId   | Long   | PK                 |
+   | supplyName | String | 청소 도구/세제 이름        |
+   | placeId    | Long   | FK → Place.placeId |
 
-### 3. commnet
-| 필드명         | 타입    | 설명                     |
-|-------------|---------|------------------------|
-| commentId   | Long    | Comment 고유 Primary Key |
-| content     | String  | comment의 내용            |
-| isCompleted | Boolean  | 완료 여부                  |
-| isChecked   | Boolean | 완료 여부 확인 여부            |
-| memberId    | Long    | Member FK (게시글 작성자)    |
+
+3. Routine
+   | 필드명          | 타입      | 설명                      |
+   | ------------ | ------- | ----------------------- |
+   | routineId    | Long    | PK                      |
+   | orderIndex   | Long    | 루틴 순서를 위한 정렬 기준(sortBy) |
+   | title        | String  | 루틴 단계 제목                |
+   | description  | String  | 루틴 설명                   |
+   | routineImage | String  | 루틴 단계 이미지               |
+   | isComplete   | Boolean | 단계 완료 여부                |
+   | placeId      | Long    | FK → Place.placeId      |
