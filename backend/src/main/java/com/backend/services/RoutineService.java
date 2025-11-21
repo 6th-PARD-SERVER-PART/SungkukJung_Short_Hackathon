@@ -1,7 +1,6 @@
 package com.backend.services;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
@@ -23,6 +22,6 @@ public class RoutineService {
         return routineRepository.findByPlace_PlaceIdOrderByOrderIndexAsc(placeId)
                 .stream()
                 .map(routineMapper::toRoutineDto)
-                .collect(Collectors.toList());
+                .toList();
     }
 }

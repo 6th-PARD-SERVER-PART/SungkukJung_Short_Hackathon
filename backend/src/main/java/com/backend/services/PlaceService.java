@@ -43,12 +43,12 @@ public class PlaceService {
         List<RoutineDto> routineDtos = routineRepository.findByPlace_PlaceIdOrderByOrderIndexAsc(placeId)
                 .stream()
                 .map(routineMapper::toRoutineDto)
-                .collect(Collectors.toList());
+                .toList();
 
         List<SupplyDto> supplyDtos = place.getSupplies()
                 .stream()
                 .map(supplyMapper::toSupplyDto)
-                .collect(Collectors.toList());
+                .toList();
 
         return new PlaceDto.PlaceDetailRequest(
                 place.getPlaceId(),
