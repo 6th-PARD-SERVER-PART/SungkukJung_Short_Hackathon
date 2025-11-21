@@ -20,8 +20,8 @@ public class SwaggerConfig {
 
     private Info apiInfo() {
         return new Info()
-                .title("hw4")
-                .description("hw4 스웨거")
+                .title("clean_go")
+                .description("clean_go 스웨거")
                 .version("1.0.0");
     }
 }

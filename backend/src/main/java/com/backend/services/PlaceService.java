@@ -1,7 +1,6 @@
 package com.backend.services;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
@@ -22,38 +21,38 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @Transactional()
 public class PlaceService {
-    private final PlaceRepository placeRepository;
-    private final RoutineRepository routineRepository;
-    private final PlaceMapper placeMapper;
-    private final RoutineMapper routineMapper;
-    private final SupplyMapper supplyMapper;
+        private final PlaceRepository placeRepository;
+        private final RoutineRepository routineRepository;
+        private final PlaceMapper placeMapper;
+        private final RoutineMapper routineMapper;
+        private final SupplyMapper supplyMapper;
 
-    public List<PlaceDto.PlaceSummaryRequest> getAllPlaces() {
-        return placeRepository.findAll()
-                .stream()
-                .map(placeMapper::toPlaceSummary)
-                .toList();
-    }
+        public List<PlaceDto.PlaceSummaryRequest> getAllPlaces() {
+                return placeRepository.findAll()
+                                .stream()
+                                .map(placeMapper::toPlaceSummary)
+                                .toList();
+        }
 
-    public PlaceDto.PlaceDetailRequest getPlaceById(Long placeId) {
-        Place place = placeRepository.findById(placeId)
-                .orElseThrow(() -> new RuntimeException("Place not found"));
+        public PlaceDto.PlaceDetailRequest getPlaceById(Long placeId) {
+                Place place = placeRepository.findById(placeId)
+                                .orElseThrow(() -> new RuntimeException("Place not found"));
 
-        // Use repository method to get sorted routines
-        List<RoutineDto> routineDtos = routineRepository.findByPlace_PlaceIdOrderByOrderIndexAsc(placeId)
-                .stream()
-                .map(routineMapper::toRoutineDto)
-                .toList();
+                // Use repository method to get sorted routines
+                List<RoutineDto> routineDtos = routineRepository.findByPlace_PlaceIdOrderByOrderIndexAsc(placeId)
+                                .stream()
+                                .map(routineMapper::toRoutineDto)
+                                .toList();
 
-        List<SupplyDto> supplyDtos = place.getSupplies()
-                .stream()
-                .map(supplyMapper::toSupplyDto)
-                .toList();
+                List<SupplyDto> supplyDtos = place.getSupplies()
+                                .stream()
+                                .map(supplyMapper::toSupplyDto)
+                                .toList();
 
-        return new PlaceDto.PlaceDetailRequest(
-                place.getPlaceId(),
-                place.getPlaceName(),
-                routineDtos,
-                supplyDtos);
-    }
+                return new PlaceDto.PlaceDetailRequest(
+                                place.getPlaceId(),
+                                place.getPlaceName(),
+                                routineDtos,
+                                supplyDtos);
+        }
 }
