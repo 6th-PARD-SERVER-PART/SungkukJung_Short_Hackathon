@@ -4,13 +4,14 @@ Base URL: /api
 
 
 1. Place
-| 필드명        | 타입     | 설명                     |
-| ---------- | ------ | ---------------------- |
-| placeId    | Long   | PK                     |
-| placeName  | String | 장소명                    |
-| placeImage | String | 장소 대표 이미지 파일명          |
-| supplyId   | Long   | FK → Supply.supplyId   |
-| routineId  | Long   | FK → Routine.routineId |
+   | 필드명        | 타입     | 설명                     |
+   | ---------- | ------ | ---------------------- |
+   | placeId    | Long   | PK                     |
+   | placeName  | String | 장소명                    |
+   | placeImage | String | 장소 대표 이미지 파일명          |
+   | supplyId   | Long   | FK → Supply.supplyId   |
+   | routineId  | Long   | FK → Routine.routineId |
+
 
 
 2. Supply
