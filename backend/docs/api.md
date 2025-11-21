@@ -4,6 +4,8 @@ Base URL: /api
 
 
 1. Place
+Base URL: /api/places
+
    | 필드명        | 타입     | 설명                     |
    | ---------- | ------ | ---------------------- |
    | placeId    | Long   | PK                     |
@@ -12,6 +14,55 @@ Base URL: /api
    | supplyId   | Long   | FK → Supply.supplyId   |
    | routineId  | Long   | FK → Routine.routineId |
 
+1) 전체 장소 조회 — GET /places
+
+📌 설명
+모든 장소(Place)를 리스트 형태로 조회합니다.
+
+✔ Response (200 OK)
+[
+    {
+    "placeId": 1,
+    "placeName": "욕실",
+    "placeImage": "bathroom.png",
+    "supplyId": 10,
+    "routineId": 100
+    },
+    {
+    "placeId": 2,
+    "placeName": "주방",
+    "placeImage": "kitchen.png",
+    "supplyId": 11,
+    "routineId": 101
+    }
+]
+
+
+
+2) 단일 장소 조회 — GET /places/{placeId}
+
+📌 설명
+placeId를 기반으로 특정 장소의 상세 정보를 조회합니다.
+
+✔ Path Variable
+| 이름      | 타입   | 설명        |
+| ------- | ---- | --------- |
+| placeId | Long | 조회할 장소 ID |
+
+✔ Response (200 OK)
+{
+"placeId": 1,
+"placeName": "욕실",
+"placeImage": "bathroom.png",
+"supplyId": 10,
+"routineId": 100
+}
+
+❗ Response (404 Not Found)
+{
+"error": "Place not found",
+"placeId": 999
+}
 
 
 2. Supply
