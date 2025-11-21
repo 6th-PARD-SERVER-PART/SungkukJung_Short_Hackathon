@@ -21,7 +21,7 @@ public class SwaggerConfig {
     private Info apiInfo() {
         return new Info()
                 .title("clean_go")
-                .description("clean_go 스웨거")
+                .description("clean_go swagger")
                 .version("1.0.0");
     }
 }
