@@ -30,6 +30,8 @@ DB에 사전 저장된 장소(Place), 루틴(Routine), 준비물(Supply)을 조�
 
 # 3. API 상세 명세 (Details)
 
+### **Base URL: `/places`**
+
 ## 3.1 장소 전체 조회
 
 ### **GET `/places`**
