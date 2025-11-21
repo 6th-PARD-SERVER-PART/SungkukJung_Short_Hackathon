@@ -35,3 +35,19 @@ out/
 
 ### VS Code ###
 .vscode/
+
+
+# Ignore Spring Boot configuration files
+application.properties
+application.yaml
+
+# Ignore environment-specific files
+*.env
+
+# Ignore IDE/project files
+/.idea/
+/target/
+/*.iml
+
+# Ignore OS junk
+.DS_Store
