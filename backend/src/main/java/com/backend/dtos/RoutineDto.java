@@ -1,4 +1,4 @@
 package com.backend.dtos;
 
-public class MemberDto {
+public class RoutineDto {
 }

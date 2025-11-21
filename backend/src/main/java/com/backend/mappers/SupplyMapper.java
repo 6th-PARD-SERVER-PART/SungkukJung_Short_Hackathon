@@ -1,4 +1,4 @@
 package com.backend.mappers;
 
-public interface HouseMapper {
+public interface SupplyMapper {
 }

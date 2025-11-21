@@ -1,4 +1,4 @@
 package com.backend.dtos;
 
-public class CommentDto {
+public class PlaceDto {
 }

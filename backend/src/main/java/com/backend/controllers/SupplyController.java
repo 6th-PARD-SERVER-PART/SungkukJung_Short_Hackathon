@@ -1,4 +1,4 @@
 package com.backend.controllers;
 
-public class CommentController {
+public class SupplyController {
 }

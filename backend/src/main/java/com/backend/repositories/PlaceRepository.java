@@ -1,4 +1,4 @@
 package com.backend.repositories;
 
-public interface HouseRepository {
+public interface PlaceRepository {
 }
